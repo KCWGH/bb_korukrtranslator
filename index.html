@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=640, initial-scale=1.0, user-scalable=no">
+    <title>BB Translator</title>
+    <style>
+        /* 블랙베리 9900 UI 스타일링 (640x480 해상도 최적화) */
+        body {
+            background-color: #ebebeb;
+            font-family: "Helvetica", sans-serif;
+            margin: 0;
+            padding: 10px;
+            color: #333;
+        }
+
+        .header {
+            background-color: #000;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .container {
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 0 0 5px 5px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            border: 1px solid #aaa;
+            font-size: 16px;
+            margin-bottom: 10px;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        select,
+        button {
+            width: 100%;
+            height: 40px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #0055aa;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px dashed #999;
+            min-height: 50px;
+            word-wrap: break-word;
+            font-size: 16px;
+        }
+
+        .footer {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 10px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">KOR-UKR Translator</div>
+
+    <div class="container">
+        <select id="direction">
+            <option value="ko|uk">한국어 -> 우크라이나어</option>
+            <option value="uk|ko">우크라이나어 -> 한국어</option>
+        </select>
+
+        <textarea id="inputText" placeholder="번역할 내용을 입력하세요..."></textarea>
+
+        <button onclick="translateText()">번역하기 (Translate)</button>
+
+        <div id="result">번역 결과가 여기 표시됩니다.</div>
+    </div>
+
+    <div class="footer">Powered by Google Translate</div>
+
+    <script type="text/javascript">
+        function translateText() {
+            var apiKey = 'YOUR_API_KEY'; // 여기에 발급받은 구글 API 키 입력
+            var text = document.getElementById('inputText').value;
+            var direction = document.getElementById('direction').value.split('|');
+            var source = direction[0];
+            var target = direction[1];
+            var resultDiv = document.getElementById('result');
+
+            if (!text) {
+                alert('텍스트를 입력해 주세요.');
+                return;
+            }
+
+            resultDiv.innerHTML = "번역 중...";
+
+            // 블랙베리 브라우저 호환을 위한 레거시 XMLHttpRequest 사용
+            var url = "https://translation.googleapis.com/language/translate/v2?key=" + apiKey;
+            url += "&q=" + encodeURIComponent(text);
+            url += "&source=" + source;
+            url += "&target=" + target;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        resultDiv.innerHTML = response.data.translations[0].translatedText;
+                    } else {
+                        resultDiv.innerHTML = "오류 발생: " + xhr.status;
+                    }
+                }
+            };
+            xhr.send();
+        }
+    </script>
+
+</body>
+
+</html>
