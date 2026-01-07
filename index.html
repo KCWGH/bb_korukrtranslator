@@ -3,136 +3,240 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=640, initial-scale=1.0, user-scalable=no">
-    <title>BB Translator</title>
+    <meta name="viewport" content="width=640, height=480, user-scalable=no">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico">
+    <title>Translator</title>
     <style>
-        /* 블랙베리 9900 UI 스타일링 (640x480 해상도 최적화) */
-        body {
-            background-color: #ebebeb;
-            font-family: "Helvetica", sans-serif;
-            margin: 0;
-            padding: 10px;
-            color: #333;
+        @font-face {
+            font-family: 'Pretendard';
+            src: url('/static/fonts/Pretendard-Regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
         }
 
-        .header {
-            background-color: #000;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-            font-weight: bold;
-            border-radius: 5px 5px 0 0;
+        @font-face {
+            font-family: 'Pretendard';
+            src: url('/static/fonts/Pretendard-SemiBold.woff') format('woff');
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        body {
+            background: #000;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', Helvetica, Arial, sans-serif;
+            overflow: hidden;
         }
 
         .container {
-            background: #fff;
-            border: 1px solid #ccc;
-            padding: 15px;
-            border-radius: 0 0 5px 5px;
+            width: 640px;
+            height: 480px;
+            margin: 0 auto;
+            position: relative;
+            background: #2c3e50;
+            overflow: hidden;
         }
 
-        textarea {
+        .result-area {
+            height: 405px;
+            width: 640px;
+            box-sizing: border-box;
+            background: #2c3e50;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        #r {
             width: 100%;
-            height: 100px;
-            border: 1px solid #aaa;
-            font-size: 16px;
-            margin-bottom: 10px;
-            -webkit-box-sizing: border-box;
+            height: 100%;
+            background: transparent;
+            border: none;
+            color: #eee;
+            font-size: 32px;
+            font-weight: 600;
+            resize: none;
+            outline: none;
+            padding: 0;
+            margin: 0;
+            font-family: 'Pretendard', sans-serif;
+            line-height: 1.4;
+        }
+
+        .bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 640px;
+            height: 75px;
+            background: #333;
+            border-top: 2px solid #000;
             box-sizing: border-box;
         }
 
-        select,
-        button {
-            width: 100%;
-            height: 40px;
-            font-size: 16px;
-            margin-bottom: 10px;
+        .bar-table {
+            width: 640px;
+            height: 73px;
+            border-collapse: collapse;
+            table-layout: fixed;
         }
 
-        button {
-            background-color: #0055aa;
-            color: white;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
+        .dir-td {
+            width: 115px;
+            padding-left: 10px;
+            vertical-align: middle;
+            box-sizing: border-box;
         }
 
-        #result {
-            margin-top: 15px;
-            padding: 10px;
-            background: #f9f9f9;
-            border: 1px dashed #999;
-            min-height: 50px;
-            word-wrap: break-word;
-            font-size: 16px;
+        .input-td {
+            width: 385px;
+            vertical-align: middle;
+            box-sizing: border-box;
         }
 
-        .footer {
-            font-size: 12px;
+        .btn-td {
+            width: 140px;
+            padding-right: 10px;
+            text-align: right;
+            vertical-align: middle;
+            box-sizing: border-box;
+        }
+
+        .action-btn {
+            display: inline-block;
+            width: 95px;
+            height: 55px;
+            background: #444;
+            color: #fff;
+            border: 1px solid #000;
+            border-radius: 4px;
+            font-family: 'Pretendard';
+            font-size: 22px;
+            font-weight: 600;
             text-align: center;
-            margin-top: 10px;
-            color: #777;
+            line-height: 55px;
+            cursor: pointer;
+            text-decoration: none;
+            vertical-align: middle;
+            box-sizing: border-box;
+        }
+
+        .add-input {
+            width: 375px;
+            height: 55px;
+            font-family: 'Pretendard';
+            font-size: 28px;
+            font-weight: 600;
+            background: #fff;
+            border: 1px solid #000;
+            text-indent: 15px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            vertical-align: middle;
+        }
+
+        .add-btn {
+            width: 125px;
+            height: 55px;
+            background: #444;
+            color: #fff;
+            border: 1px solid #000;
+            font-family: 'Pretendard';
+            font-size: 28px;
+            font-weight: 600;
+            text-align: center;
+            line-height: 55px;
+            border-radius: 4px;
+            cursor: pointer;
+            vertical-align: middle;
+            box-sizing: border-box;
+        }
+
+        .action-btn:active,
+        .add-btn:active {
+            background: #555;
         }
     </style>
 </head>
 
 <body>
-
-    <div class="header">KOR-UKR Translator</div>
-
     <div class="container">
-        <select id="direction">
-            <option value="ko|uk">한국어 -> 우크라이나어</option>
-            <option value="uk|ko">우크라이나어 -> 한국어</option>
-        </select>
-
-        <textarea id="inputText" placeholder="번역할 내용을 입력하세요..."></textarea>
-
-        <button onclick="translateText()">번역하기 (Translate)</button>
-
-        <div id="result">번역 결과가 여기 표시됩니다.</div>
+        <div class="result-area">
+            <textarea id="r" readonly placeholder="번역 결과가 여기 표시됩니다." onclick="this.select()"></textarea>
+        </div>
+        <div class="bottom-bar">
+            <table class="bar-table">
+                <tr>
+                    <td class="dir-td">
+                        <button id="dir-btn" class="action-btn" onclick="toggleDir()">한 → 우</button>
+                    </td>
+                    <td class="input-td">
+                        <input type="text" id="i" class="add-input" placeholder="내용을 입력하세요."
+                            onkeypress="if(event.keyCode==13){t();return false;}">
+                    </td>
+                    <td class="btn-td">
+                        <button id="go" class="add-btn" onclick="t()">번역</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
+    <script>
+        var src = 'ko', tgt = 'uk';
+        var k = 'YOUR_API_KEY';
 
-    <div class="footer">Powered by Google Translate</div>
-
-    <script type="text/javascript">
-        function translateText() {
-            var apiKey = 'YOUR_API_KEY'; // 여기에 발급받은 구글 API 키 입력
-            var text = document.getElementById('inputText').value;
-            var direction = document.getElementById('direction').value.split('|');
-            var source = direction[0];
-            var target = direction[1];
-            var resultDiv = document.getElementById('result');
-
-            if (!text) {
-                alert('텍스트를 입력해 주세요.');
-                return;
+        function toggleDir() {
+            if (src === 'ko') {
+                setDir('uk', 'ko');
+            } else {
+                setDir('ko', 'uk');
             }
+        }
 
-            resultDiv.innerHTML = "번역 중...";
+        function setDir(s, t_lang) {
+            src = s;
+            tgt = t_lang;
+            var btn = document.getElementById('dir-btn');
+            var i = document.getElementById('i');
+            var g = document.getElementById('go');
+            var r = document.getElementById('r');
 
-            // 블랙베리 브라우저 호환을 위한 레거시 XMLHttpRequest 사용
-            var url = "https://translation.googleapis.com/language/translate/v2?key=" + apiKey;
-            url += "&q=" + encodeURIComponent(text);
-            url += "&source=" + source;
-            url += "&target=" + target;
+            if (src === 'ko') {
+                btn.innerHTML = '한 → 우';
+                i.placeholder = '내용을 입력하세요.';
+                g.innerHTML = '번역';
+                r.placeholder = '번역 결과가 여기 표시됩니다.';
+            } else {
+                btn.innerHTML = '우 → 한';
+                i.placeholder = 'Введіть текст.';
+                g.innerHTML = 'Перек.';
+                r.placeholder = 'Результат перекладу буде тут.';
+            }
+            i.value = '';
+            r.value = '';
+        }
 
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", url, true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
-                        var response = JSON.parse(xhr.responseText);
-                        resultDiv.innerHTML = response.data.translations[0].translatedText;
+        function t() {
+            var txt = document.getElementById('i').value, v = document.getElementById('r');
+            if (!txt) return;
+            v.value = (src === 'ko' ? '처리 중...' : 'Обробка...');
+            var u = "https://translation.googleapis.com/language/translate/v2?key=" + k + "&q=" + encodeURIComponent(txt) + "&source=" + src + "&target=" + tgt;
+            var x = new XMLHttpRequest();
+            x.open("GET", u, true);
+            x.onreadystatechange = function () {
+                if (x.readyState == 4) {
+                    if (x.status == 200) {
+                        var p = JSON.parse(x.responseText);
+                        v.value = p.data.translations[0].translatedText.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
                     } else {
-                        resultDiv.innerHTML = "오류 발생: " + xhr.status;
+                        v.value = "Err:" + x.status;
                     }
                 }
             };
-            xhr.send();
+            x.send();
         }
     </script>
-
 </body>
 
 </html>
